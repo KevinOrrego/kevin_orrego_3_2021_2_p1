@@ -10,8 +10,21 @@ class AnimeList extends StatefulWidget {
 class _AnimeListState extends State<AnimeList> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text("anime list")),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Lista de animes disponibles'),
+      ),
+      body: ListView(
+        children: [
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(30),
+              child: const Text("este es el cuerpo del delito",
+                  style: TextStyle(color: Colors.black, fontSize: 22)),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
