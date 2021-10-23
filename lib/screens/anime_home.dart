@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'anime_list.dart';
 
 class AnimeHome extends StatefulWidget {
   const AnimeHome({Key? key}) : super(key: key);
@@ -8,6 +9,11 @@ class AnimeHome extends StatefulWidget {
 }
 
 class _AnimeHomeState extends State<AnimeHome> {
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +27,13 @@ class _AnimeHomeState extends State<AnimeHome> {
           Container(
             padding: const EdgeInsets.all(30),
             child: FloatingActionButton.extended(
-              onPressed: () {},
+              onPressed: () {
+                // este elemento hace que me mueva entre pantallas
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
+                  return const AnimeList();
+                }));
+              },
               label: const Text(
                 "Ir a la lista",
                 style: TextStyle(color: Colors.black, fontSize: 22),
