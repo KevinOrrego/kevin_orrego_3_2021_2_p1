@@ -66,3 +66,12 @@ class _AnimeHomeState extends State<AnimeHome> {
     );
   }
 }
+
+
+// endpoints:
+
+// todos los animes:
+// https://anime-facts-rest-api.herokuapp.com/api/v1
+
+// un solo anime:
+// https://anime-facts-rest-api.herokuapp.com/api/v1/nombredelanime
