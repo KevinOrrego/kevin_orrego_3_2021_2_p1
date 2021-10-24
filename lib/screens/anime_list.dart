@@ -26,6 +26,8 @@ class _AnimeListState extends State<AnimeList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.blueGrey,
       appBar: AppBar(
         title: const Text('Lista de animes disponibles'),
       ),
@@ -63,5 +65,59 @@ class _AnimeListState extends State<AnimeList> {
     print(_animes);
   }
 
-  _getContent() {}
+  Widget _getContent() {
+    return _animes.isEmpty ? _noContent() : _getListView();
+  }
+
+  Widget _noContent() {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(30),
+        child: const Text('Actualmente no hay animes disponibles',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  Widget _getListView() {
+    return Container(
+      // padding: EdgeInsets.symmetric(vertical: 30.0),
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        children: _animes.map((e) {
+          return InkWell(
+            onTap: () {},
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.lightBlue),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              child: Row(
+                children: [
+                  Image.network(
+                    e.animeImg,
+                    width: 120,
+                    height: 120,
+                  ),
+                  Flexible(
+                    child: Text(
+                      e.animeName.replaceAll("_", " "),
+                      overflow: TextOverflow.fade,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
 }
