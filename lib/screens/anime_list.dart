@@ -5,6 +5,7 @@ import 'package:kevin_orrego_3_2021_2_p1/components/loader_component.dart';
 import 'package:kevin_orrego_3_2021_2_p1/helpers/constants.dart';
 import 'package:kevin_orrego_3_2021_2_p1/models/anime.dart';
 import 'package:http/http.dart' as http;
+import 'package:kevin_orrego_3_2021_2_p1/screens/single_anime.dart';
 
 class AnimeList extends StatefulWidget {
   const AnimeList({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _AnimeListState extends State<AnimeList> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Colors.grey[400],
       appBar: AppBar(
         title: const Text('Lista de animes disponibles'),
       ),
@@ -80,44 +81,46 @@ class _AnimeListState extends State<AnimeList> {
   }
 
   Widget _getListView() {
-    return Container(
-      // padding: EdgeInsets.symmetric(vertical: 30.0),
-      child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 30),
-        children: _animes.map((e) {
-          return InkWell(
-            onTap: () {},
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.lightBlue),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              child: Row(
-                children: [
-                  Image.network(
-                    e.animeImg,
-                    width: 120,
-                    height: 120,
-                  ),
-                  Flexible(
-                    child: Text(
-                      e.animeName.replaceAll("_", " "),
-                      overflow: TextOverflow.fade,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                      ),
+    return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 30),
+      children: _animes.map((e) {
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SingleAnime(animeName: e.animeName)));
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.lightBlue),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            margin:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            child: Row(
+              children: [
+                Image.network(
+                  e.animeImg,
+                  width: 120,
+                  height: 120,
+                ),
+                Flexible(
+                  child: Text(
+                    e.animeName.replaceAll("_", " "),
+                    overflow: TextOverflow.fade,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
                     ),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
-          );
-        }).toList(),
-      ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
