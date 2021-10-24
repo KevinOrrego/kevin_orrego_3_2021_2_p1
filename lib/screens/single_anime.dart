@@ -1,6 +1,7 @@
 import 'dart:convert';
 // import 'dart:developer';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:kevin_orrego_3_2021_2_p1/components/loader_component.dart';
 import 'package:kevin_orrego_3_2021_2_p1/helpers/constants.dart';
@@ -49,6 +50,29 @@ class _SingleAnimeState extends State<SingleAnime> {
     setState(() {
       _showLoader = true;
     });
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Problemas de conexion'),
+              content: Text('Verifica que estas conectado a internet'),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Aceptar')),
+              ],
+            );
+          });
+
+      return;
+    }
 
     var url = Uri.parse('${Constants.apiUrl}/${widget.animeName}');
 

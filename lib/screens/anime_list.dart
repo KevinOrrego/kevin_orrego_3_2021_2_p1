@@ -6,6 +6,7 @@ import 'package:kevin_orrego_3_2021_2_p1/helpers/constants.dart';
 import 'package:kevin_orrego_3_2021_2_p1/models/anime.dart';
 import 'package:http/http.dart' as http;
 import 'package:kevin_orrego_3_2021_2_p1/screens/single_anime.dart';
+import 'package:connectivity/connectivity.dart';
 
 class AnimeList extends StatefulWidget {
   const AnimeList({Key? key}) : super(key: key);
@@ -15,8 +16,10 @@ class AnimeList extends StatefulWidget {
 }
 
 class _AnimeListState extends State<AnimeList> {
-  final List<Anime> _animes = [];
+  List<Anime> _animes = [];
   bool _showLoader = false;
+  bool _isFiltered = false;
+  String _search = "";
 
   @override
   void initState() {
@@ -31,6 +34,12 @@ class _AnimeListState extends State<AnimeList> {
       backgroundColor: Colors.grey[400],
       appBar: AppBar(
         title: const Text('Lista de animes disponibles'),
+        actions: <Widget>[
+          _isFiltered
+              ? IconButton(
+                  onPressed: _removeFilter, icon: Icon(Icons.filter_none))
+              : IconButton(onPressed: _showFilter, icon: Icon(Icons.filter_alt))
+        ],
       ),
       body: _showLoader
           ? LoaderComponent(text: 'Por favor espere...')
@@ -42,6 +51,29 @@ class _AnimeListState extends State<AnimeList> {
     setState(() {
       _showLoader = true;
     });
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Problemas de conexion'),
+              content: Text('Verifica que estas conectado a internet'),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Aceptar')),
+              ],
+            );
+          });
+
+      return;
+    }
 
     var url = Uri.parse(Constants.apiUrl);
 
@@ -72,8 +104,11 @@ class _AnimeListState extends State<AnimeList> {
     return Center(
       child: Container(
         padding: const EdgeInsets.all(30),
-        child: const Text('Actualmente no hay animes disponibles',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        child: Text(
+            _isFiltered
+                ? 'No hay animes con ese criterio de busqueda'
+                : 'Actualmente no hay animes disponibles',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -120,5 +155,76 @@ class _AnimeListState extends State<AnimeList> {
         );
       }).toList(),
     );
+  }
+
+  void _removeFilter() {
+    setState(() {
+      _isFiltered = false;
+    });
+    _animes = [];
+    _getAnimes();
+  }
+
+  void _showFilter() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            title: const Text('Filtrar Animes'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Text('Escriba las primeras letras del anime'),
+                const SizedBox(
+                  height: 15,
+                ),
+                TextField(
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                      hintText: 'Escribe tu busqueda',
+                      labelText: 'Buscar',
+                      suffixIcon: Icon(Icons.search)),
+                  onChanged: (value) {
+                    setState(() {
+                      _search = value;
+                    });
+                  },
+                )
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancelar')),
+              TextButton(
+                  onPressed: () => _filter(), child: const Text('Buscar')),
+            ],
+          );
+        });
+  }
+
+  void _filter() {
+    if (_search.isEmpty) {
+      return;
+    }
+
+    List<Anime> filteredList = [];
+    for (var anime in _animes) {
+      if (anime.animeName
+          .replaceAll("_", " ")
+          .toLowerCase()
+          .contains(_search.toLowerCase())) {
+        filteredList.add(anime);
+      }
+    }
+
+    setState(() {
+      _animes = filteredList;
+      _isFiltered = true;
+    });
+
+    Navigator.of(context).pop();
   }
 }
