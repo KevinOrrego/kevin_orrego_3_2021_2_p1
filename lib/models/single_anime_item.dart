@@ -1,8 +1,10 @@
+import 'facts.dart';
+
 class SingleAnimeItem {
   bool success = true;
   String img = "";
   int totalFacts = 0;
-  List<Data> data = [];
+  List<Fact> data = [];
 
   SingleAnimeItem(
       {required this.success,
@@ -17,7 +19,7 @@ class SingleAnimeItem {
     if (json['data'] != null) {
       data = [];
       json['data'].forEach((v) {
-        data.add(Data.fromJson(v));
+        data.add(Fact.fromJson(v));
       });
     }
   }
@@ -27,28 +29,27 @@ class SingleAnimeItem {
     data['success'] = this.success;
     data['img'] = this.img;
     data['total_facts'] = this.totalFacts;
-    if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
-    }
+    data['data'] = this.data.map((v) => v.toJson()).toList();
+
     return data;
   }
 }
 
-class Data {
-  int factId = 0;
-  String fact = "";
+// class Data {
+//   int factId = 0;
+//   String fact = "";
 
-  Data({required this.factId, required this.fact});
+//   Data({required this.factId, required this.fact});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    factId = json['fact_id'];
-    fact = json['fact'];
-  }
+//   Data.fromJson(Map<String, dynamic> json) {
+//     factId = json['fact_id'];
+//     fact = json['fact'];
+//   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['fact_id'] = this.factId;
-    data['fact'] = this.fact;
-    return data;
-  }
-}
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['fact_id'] = this.factId;
+//     data['fact'] = this.fact;
+//     return data;
+//   }
+// }

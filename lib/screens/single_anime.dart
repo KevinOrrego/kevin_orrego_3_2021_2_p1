@@ -1,8 +1,10 @@
 import 'dart:convert';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:kevin_orrego_3_2021_2_p1/components/loader_component.dart';
 import 'package:kevin_orrego_3_2021_2_p1/helpers/constants.dart';
+import 'package:kevin_orrego_3_2021_2_p1/models/facts.dart';
 import 'package:kevin_orrego_3_2021_2_p1/models/single_anime_item.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,6 +19,7 @@ class SingleAnime extends StatefulWidget {
 
 class _SingleAnimeState extends State<SingleAnime> {
   late SingleAnimeItem _singleAnimeItem;
+  final List _facts = [];
   bool _showLoader = false;
 
   @override
@@ -28,6 +31,7 @@ class _SingleAnimeState extends State<SingleAnime> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[100],
       appBar: AppBar(
         title: Text(_getName()),
       ),
@@ -59,8 +63,14 @@ class _SingleAnimeState extends State<SingleAnime> {
 
     var body = response.body;
     var decodedJson = jsonDecode(body);
+    if (decodedJson != null) {
+      _singleAnimeItem = SingleAnimeItem.fromJson(decodedJson);
+      for (var item in decodedJson['data']) {
+        _facts.add(Fact.fromJson(item));
+      }
+    }
 
-    _singleAnimeItem = SingleAnimeItem.fromJson(decodedJson);
+    // print(_facts[0].fact);
   }
 
   _getContent() {
@@ -69,6 +79,8 @@ class _SingleAnimeState extends State<SingleAnime> {
 
   Widget _getListView() {
     return Center(
+        child: SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 32.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -77,9 +89,57 @@ class _SingleAnimeState extends State<SingleAnime> {
             // width: 120,
             // height: 120,
           ),
+          Container(
+            padding: const EdgeInsets.all(20),
+            child: Flexible(
+                child: Text(
+              'Número de hechos disponibles: ${_singleAnimeItem.totalFacts.toString()}',
+              overflow: TextOverflow.fade,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 28,
+              ),
+            )),
+          ),
+          Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    '- ${_facts[0].fact}',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Text('- ${_facts[1].fact}',
+                      style: const TextStyle(fontSize: 20)),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Text('- ${_facts[2].fact}',
+                      style: const TextStyle(fontSize: 20)),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Text('- ${_facts[3].fact}',
+                      style: const TextStyle(fontSize: 20)),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Text('- ${_facts[4].fact}',
+                      style: const TextStyle(fontSize: 20)),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _noContent() {
@@ -91,4 +151,21 @@ class _SingleAnimeState extends State<SingleAnime> {
       ),
     );
   }
+
+  // _getFacts() {
+  //   return ListView.builder(
+  //       itemCount: _facts.length,
+  //       itemBuilder: (context, index) {
+  //         return Text(_facts[index].fact);
+  //       });
+  // }
+  // Widget _getFacts() {
+  //   return ListView.builder(
+  //       itemCount: _facts.length,
+  //       itemBuilder: (context, index) {
+  //         return ListTile(
+  //           title: Text('- ${_facts[index].fact}'),
+  //         );
+  //       });
+  // }
 }

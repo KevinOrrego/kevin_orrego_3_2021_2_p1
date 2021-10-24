@@ -15,7 +15,7 @@ class AnimeList extends StatefulWidget {
 }
 
 class _AnimeListState extends State<AnimeList> {
-  List<Anime> _animes = [];
+  final List<Anime> _animes = [];
   bool _showLoader = false;
 
   @override
@@ -43,7 +43,7 @@ class _AnimeListState extends State<AnimeList> {
       _showLoader = true;
     });
 
-    var url = Uri.parse('${Constants.apiUrl}');
+    var url = Uri.parse(Constants.apiUrl);
 
     var response = await http.get(url, headers: {
       'content-type': 'application/json',
@@ -62,8 +62,6 @@ class _AnimeListState extends State<AnimeList> {
         _animes.add(Anime.fromJson(item));
       }
     }
-
-    print(_animes);
   }
 
   Widget _getContent() {
